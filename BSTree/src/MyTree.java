@@ -466,7 +466,12 @@ public class MyTree {
             else parent.right = p.left;
         }
         if (p.right != null && p.left == null){
-            //tu hoan thien
+            if (parent == null){
+                root = p.left;
+                return;
+            }
+            if (parent.left == p) parent.left = p.right;
+            else parent.right = p.right;            
         }     
         
        //TH3: p co 2 con
