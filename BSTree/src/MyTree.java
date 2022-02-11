@@ -225,14 +225,14 @@ public class MyTree {
 
     Node getParent(Node p) {
         if (p == root) return null;
-        Node father = null, cu = root;
+        Node parent = null, cu = root;
         while (cu != null && cu.info != p.info) {
-            father = cu;
+            parent = cu;
             if (cu.info < p.info) cu = cu.right;
             else cu = cu.left;
         }
         if (cu == null) return null;
-        return father;
+        return parent;
     }    
     
 //    int height(Node node) 
@@ -417,16 +417,11 @@ public class MyTree {
         balance(arr,0,arr.length-1);
     }
     
-    int maxBetweenInteger(int n1, int n2){
-        if (n1 > n2) return n1;
-        return n2;
-    }
-    
     int findMaxSumPath(Node p){
         if (isEmpty()) return 0;
         if (p==null) return 0;
         if (p.left == null && p.right == null) return p.info;
-        return p.info + maxBetweenInteger(findMaxSumPath(p.left), findMaxSumPath(p.right));
+        return p.info + Math.max(findMaxSumPath(p.left), findMaxSumPath(p.right));
     }
     
     int findMaxSumPath(){
@@ -440,8 +435,9 @@ public class MyTree {
         Node parent = null;
         while(p!=null){
             if (p.info == x) break;
-            if (p.info > x) p = p.left;
-            else p = p.right;
+            if (p.info > x) {parent = p; p = p.left;}
+            else {parent = p; p = p.right;}
+            
         }
         //p = null, tuc la khong co x trong cay
         if (p == null) return;
@@ -467,7 +463,7 @@ public class MyTree {
         }
         if (p.right != null && p.left == null){
             if (parent == null){
-                root = p.left;
+                root = p.right;
                 return;
             }
             if (parent.left == p) parent.left = p.right;
@@ -479,7 +475,7 @@ public class MyTree {
             //delete by Copying
             //deleByCopying(p);
             //delete by Merging
-            delebyMerging(getParent(p), p);
+            delebyMerging(getParent(p),p);
         }
     }
     // tim node phai nhat cua cay con trai
@@ -511,26 +507,23 @@ public class MyTree {
             if (p.info != root.info) {
                 return;
             }
-            if (root.left == null) {
-                root = root.right;
-                return;
-            }
+            //         15                  10
+            //     10      30   -->     5     30
+            //  5       20   40       4  7  20  40
+            //4   7
             if (root.left.right == null) {
                 root.left.right = root.right;
                 root = root.left;
                 return;
             }
             Node q = root.left;
+            //Tim node phai nhat cua root.l
             while (q.right != null) {
                 q = q.right;
             }
+            //Noi p.r voi not phai nhat
             q.right = p.right;
             root = p.left;
-            return;
-        }
-        if (p.left == null) {
-            if (p.info < parent.info) parent.left = p.right;
-            else parent.right = p.right;
             return;
         }
         Node q = p.left;
